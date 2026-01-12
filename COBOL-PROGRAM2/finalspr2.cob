@@ -76,9 +76,9 @@
            02 FILLER             PIC X(14) VALUE SPACES.
            02 AVERAGE-GRADE-OUT  PIC ZZ9.99.
            02 FILLER             PIC X(12) VALUE SPACES.
-           02 PASSED-OUT         PIC 999.
+           02 PASSED-OUT         PIC ZZ9.
            02 FILLER             PIC X(12) VALUE SPACES.
-           02 FAILED-OUT         PIC 999.
+           02 FAILED-OUT         PIC ZZ9.
 
        01  TOTAL-LINE.
            02 FILLER           PIC X(5)  VALUE SPACES.
@@ -86,9 +86,9 @@
            02 FILLER           PIC X(17) VALUE SPACES.
            02 TOT-STUDENTS     PIC ZZ9.
            02 FILLER           PIC X(92) VALUE SPACES.
-           02 TOT-PASSED       PIC 999.
+           02 TOT-PASSED       PIC ZZ9.
            02 FILLER           PIC X(12) VALUE SPACES.
-           02 TOT-FAILED       PIC 999.
+           02 TOT-FAILED       PIC ZZ9.
 
        01  INPUT-DETAILS.
            02 FILLER PIC X(5) VALUE SPACES.
