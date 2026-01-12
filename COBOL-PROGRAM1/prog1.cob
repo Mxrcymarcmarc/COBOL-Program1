@@ -59,13 +59,13 @@
            02 TLDISP-NET    PIC Z(6)9.99.
 
        01 EMPLOYEE-PAYROLL.
-           02 EMP-TYPE     PIC X(14)   OCCURS 4 TIMES.
-           02 EMP-NO       PIC 9(3)    OCCURS 4 TIMES.
-           02 BASIC        PIC 9(7)V99 OCCURS 4 TIMES.
-           02 ALLOWANCE    PIC 9(7)V99 OCCURS 4 TIMES.
-           02 GROSS        PIC 9(7)V99 OCCURS 4 TIMES.
-           02 DEDUCT       PIC 9(7)V99 OCCURS 4 TIMES.
-           02 NET-PAY      PIC 9(7)V99 OCCURS 4 TIMES.
+           02 EMP-TYPE      PIC X(14)   OCCURS 4 TIMES.
+           02 EMP-NO        PIC 9(3)    OCCURS 4 TIMES.
+           02 EMP-BASIC     PIC 9(7)V99 OCCURS 4 TIMES.
+           02 EMP-ALLOWANCE PIC 9(7)V99 OCCURS 4 TIMES.
+           02 EMP-GROSS     PIC 9(7)V99 OCCURS 4 TIMES.
+           02 EMP-DEDUCT    PIC 9(7)V99 OCCURS 4 TIMES.
+           02 EMP-NET-PAY   PIC 9(7)V99 OCCURS 4 TIMES.
        01 TOTALS.
            02 TL-EMP-NO    PIC 9(3).
            02 TL-BASIC     PIC 9(7)V99.
@@ -81,9 +81,9 @@
                03 BASIC-DECIM PIC 9(2).
 
        01 DISPLAY-VARS.
-           02 Q-COL PIC 99 VALUE 5.
-           02 A-COL PIC 99 VALUE 50.
-           02 WS-COL  PIC 99.
+           02 Q-COL    PIC 99 VALUE 5.
+           02 A-COL    PIC 99 VALUE 50.
+           02 WS-COL   PIC 99.
 
        01 INX PIC 99 VALUE 1.
 
@@ -94,6 +94,7 @@
        PROCEDURE DIVISION.
            PERFORM INIT-TYPES.
            PERFORM INPUT-VALUES VARYING INX FROM 1 BY 1 UNTIL INX > 4.
+           PERFORM COMPUTE-PAYROLL.
            PERFORM CLOSE-PROGRAM.
 
        INIT-TYPES.
@@ -129,7 +130,24 @@
            ACCEPT BASIC-WHOLE LINE 9 COLUMN A-COL.
            COMPUTE WS-COL = A-COL + 8.
            ACCEPT BASIC-DECIM LINE 9 COLUMN WS-COL.
-           MOVE IN-BASIC TO BASIC(INX).
+           MOVE IN-BASIC TO EMP-BASIC(INX).
+
+       COMPUTE-PAYROLL.
+           PERFORM VARYING INX FROM 1 BY 1 UNTIL INX > 4
+               COMPUTE EMP-ALLOWANCE(INX) = EMP-BASIC(INX) * 0.10
+               COMPUTE EMP-GROSS(INX) = 
+                   EMP-BASIC(INX) + EMP-ALLOWANCE(INX)
+               COMPUTE EMP-DEDUCT(INX) = EMP-GROSS(INX) * 0.12
+               COMPUTE EMP-NET-PAY(INX) = 
+                   EMP-GROSS(INX) - EMP-DEDUCT(INX)
+
+               ADD EMP-NO(INX)        TO TL-EMP-NO
+               ADD EMP-BASIC(INX)     TO TL-BASIC
+               ADD EMP-ALLOWANCE(INX) TO TL-ALLOWANCE
+               ADD EMP-GROSS(INX)     TO TL-GROSS
+               ADD EMP-DEDUCT(INX)    TO TL-DEDUCT
+               ADD EMP-NET-PAY(INX)   TO TL-NET-PAY
+           END-PERFORM.
 
        CLOSE-PROGRAM.
            STOP RUN.
